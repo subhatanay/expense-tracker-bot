@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker Bot</title>
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .toggle-link {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            max-width: 90%;
+            word-wrap: break-word;
+        }
+
+        .popup.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .error-popup {
+            background-color: #dc3545; /* Bootstrap danger color */
+        }
+
+        .success-popup {
+            background-color: #28a745; /* Bootstrap success color */
+        }
+
+        /* Title and Description */
+        .intro-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .intro-section h2 {
+            font-size: 1.5rem;
+            color: #28a745;
+        }
+
+        .intro-section p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Button Styles */
+        .btn-block {
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 10px;
+            }
+
+            .intro-section h2 {
+                font-size: 1.25rem;
+            }
+
+            .intro-section p {
+                font-size: 0.8rem;
+            }
+
+            .btn-block {
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Title and Introduction -->
+        <div class="intro-section">
+            <h2>Welcome to <span>Expense Tracker Bot</span></h2>
+            <p>Track your daily expenses effortlessly with our simple mobile app.</p>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginFormContainer" class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center">Login</h3>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email_id">Email Address</label>
+                        <input type="email" class="form-control" id="email_id" name="email_id" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password">
+                    </div>
+                    <button id="loginButton" class="btn btn-primary btn-block">Login</button>
+                </form>
+                <p class="mt-3 text-center">
+                    Don't have an account? <span id="showRegister" onclick="onToggle('register')" class="toggle-link">Register here</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerFormContainer" class="card" style="display: none;">
+            <div class="card-body">
+                <h3 class="card-title text-center">Register</h3>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerFullName">Full Name</label>
+                        <input type="text" class="form-control" id="registerFullName" name="fullName" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" name="email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" name="password" required placeholder="Enter your password">
+                    </div>
+                    <button id="registerButton" class="btn btn-success btn-block">Register</button>
+                </form>
+                <p class="mt-3 text-center">
+                    Already have an account? <span id="showLogin" onclick="onToggle('login')" class="toggle-link">Login here</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Popup -->
+    <div id="errorPopup" class="popup error-popup">
+        Network Error: Failed to send message!
+    </div>
+
+    <!-- Success Popup -->
+    <div id="successPopup" class="popup success-popup">
+        Registration successful! Please login.
+    </div>
+
+    <!-- External JavaScript Files -->
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+
+    
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "ExpenseTrackerBot",
+  "short_name": "ExpenseTrackerBot",
+  "description": "simplifed expense tracker app using chat bot interface",
+  "start_url": "index.html",
+  "scope": "index.html",
+  "icons": [
+    {
+      "src": "img/expenses_128px.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ],
+  "default_locale": "en",
+  "display": "standalone",
+  "background_color": "#FFF",
+  "theme_color": "#000",
+  "orientation": "landscape"
+}

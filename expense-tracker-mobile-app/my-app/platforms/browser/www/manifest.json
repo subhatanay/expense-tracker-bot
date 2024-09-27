@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "ExpenseTrackerBot",
+  "short_name": "ExpenseTrackerBot",
+  "version": "io.cordova.hellocordova",
+  "description": "A simplied expense income collector like a chat app",
+  "author": "Apache Cordova Team",
+  "icons": [],
+  "start_url": "index.html"
+}
