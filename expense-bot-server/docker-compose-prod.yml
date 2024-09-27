@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  web:
+    image: subhatanay/expense-tracker-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: expense_tracker_db
+      DB_USER: expense_tracker
+      DB_PASS: subha1995
+      DB_PORT: 5432
+    depends_on:
+      - db
+    networks:
+      - flask_network
+
+  db:
+    image: postgres:13
+    container_name: expense_tracker_db
+    environment:
+      POSTGRES_DB: expense_tracker
+      POSTGRES_USER: expense_tracker
+      POSTGRES_PASSWORD: subha1995
+    ports:
+      - "5432"
+    volumes:
+      - postgres_data2:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/0_init.sql
+    networks:
+      - flask_network
+
+volumes:
+  postgres_data2:
+
+networks:
+  flask_network:
+    driver: bridge

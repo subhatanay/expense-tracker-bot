@@ -1,0 +1,9 @@
+Flask
+google-generativeai
+flask_cors
+psycopg2-binary
+apscheduler
+Flask-JWT-Extended
+bcrypt
+python-dotenv
+sqlalchemy
