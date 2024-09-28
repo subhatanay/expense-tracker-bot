@@ -172,7 +172,6 @@ class TransactionService:
     def get_total(self, session_id: str, action: str, period: str, date: datetime):
         query = ""
         params = {}
-
         if period == 'day':
             query = """
                 SELECT SUM(amount) as total
@@ -201,7 +200,12 @@ class TransactionService:
             """
             params = {'action': action, 'year': date.year, 'session_id': session_id}
         else:
-            raise ValueError("Invalid period. Choose from 'day', 'month', or 'year'.")
+            query = """
+                SELECT SUM(amount) as total
+                FROM transaction
+                WHERE operation = :action AND session_id= :session_id
+            """
+            params = {'action': action, 'session_id': session_id}
 
         result = self.db_session.execute(text(query), params)
         total = result.scalar()  # Returns the first column of the first row
@@ -243,7 +247,12 @@ class TransactionService:
             params = {'action': action, 'year': date.year}
 
         else:
-            raise ValueError("Invalid period. Choose from 'day', 'month', or 'year'.")
+            query = """
+                SELECT date_of_transaction, category, sub_category, amount
+                FROM transaction
+                WHERE operation = :action AND session_id= :session_id
+            """
+            params = {'action': action, 'session_id': session_id}
 
         result = self.db_session.execute(text(query), params)
         transactions = result.fetchall()

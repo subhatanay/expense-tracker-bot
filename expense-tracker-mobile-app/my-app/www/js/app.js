@@ -1,4 +1,4 @@
-const backendUrl = "https://13.233.134.61"
+const backendUrl = "http://localhost:8080"
 
 function showErrorPopup(message) {
     errorPopup.textContent = message;

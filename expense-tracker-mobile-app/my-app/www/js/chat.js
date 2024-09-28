@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Append the user's message to the chat
         appendMessage(userMessage, 'user-message', currentDate);
-        if (userMessage.toLocaleLowerCase() === "help" || !(userMessage.startsWith("add") || userMessage.startsWith("get"))) {
+        if (userMessage.toLocaleLowerCase() === "help") {
             handleHelpCommand();
             chatInput.value = ""; 
             return;
@@ -140,26 +140,49 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
             showErrorPopup(error)
             if (error.message == "Invalid command") {
-                handleHelpCommand()
+                handleErrorWithHelpCommand()
             }
         });
     });
     loadPreviousChats();
 
-    function handleHelpCommand() {
+    function handleErrorWithHelpCommand() {
         commands = `
-            Hey there! I’m your personal Expense Tracker Bot, ready to help you stay on top of your finances. Let’s get started!<br><br>\
-Here are the commands you can use:<br><br>\
-<ul>\
-<li>add e &lt;Amount&gt; &lt;Category&gt; [Date] – Record an expense effortlessly!</li>\
-<li>add i &lt;Amount&gt; &lt;Category&gt; [Date] – Log your income in seconds!</li>\
-<li>get report day/month/year &lt;expenses/income/all&gt; – Generate detailed reports whenever you need.</li>\
-<li>get total day/month/year &lt;expenses/income/all&gt; – Quickly see your total expenses or income.</li>\
-<li>help – Need assistance? Just ask for help!</li>\
-</ul>
-        `
+        <h5>Oops! It looks like the command you provided is not recognized.</h5>
+        <p>Not sure what to do? No worries, here's how you can use the Expense Tracker Bot:</p>
+
+        <h6>Commands</h6>
+
+        <ul>
+            <li><strong>spent 1000 on groceries</strong> – Log an expense of 1000 for groceries.</li>
+            <li><strong>log an expense of 1500 on dining on 01-07-2024</strong> – Record a dining expense of 1500.</li>
+            <li><strong>received income of 3000 from salary</strong> – Log salary income of 3000.</li>
+            <li><strong>report for this month</strong> – Generate a transaction report for this month</li>
+            <li><strong>total month expenses</strong> – See total expenses for the month.</li>
+            <li><strong>help</strong> – Display this help message.</li>
+        </ul>`
         const currentDate = new Date().toISOString();
         appendMessage(commands, 'server-message', currentDate);
+    }
+
+    function handleHelpCommand() {
+        coammds = `
+        <h5>Expense Tracker Bot - Help</h5>
+        <p>Welcome! Here are the commands you can use to track your expenses and income:</p>
+
+        <h6>Commands</h6>
+
+        <ul>
+            <li><strong>spent 1000 on groceries</strong> – Log an expense of 1000 for groceries.</li>
+            <li><strong>log an expense of 1500 on dining on 01-07-2024</strong> – Record a dining expense of 1500.</li>
+            <li><strong>received income of 3000 from salary</strong> – Log salary income of 3000.</li>
+            <li><strong>report for this month</strong> – Generate a transaction report for this month</li>
+            <li><strong>total month expenses</strong> – See total expenses for the month.</li>
+            <li><strong>help</strong> – Display this help message.</li>
+        </ul>
+
+        <p>Use these commands to stay on top of your finances!</p>
+        `
     }
 });
 

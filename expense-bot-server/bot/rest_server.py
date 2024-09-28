@@ -3,13 +3,14 @@ from sqlalchemy.orm import sessionmaker
 from services import UserService, SessionService, EventService, DbConnection, TransactionService  # Import your service classes
 from expense_model import ExpenseTrackerModel
 from flask_cors import CORS,cross_origin
-from command_parser import extract_command_info
+from command_parser import extract_command_info, extract_process_command
 from email_sender import send_email
 from email_template import format_transaction_report_html
 from report_task import initiate_scheduled_task
 from jwt_token_filter import token_required
 from jwt_utils import generate_token
 import logging
+from ask_on_expenses import ExpenseChat
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -169,8 +170,8 @@ def makeTransactionEvent(user_id, session_id):
             }), 400
         
         prompt_req = request.json['message']
-        event_info = extract_command_info(prompt_req)  # assuming this returns a dictionary
-        logging.error(f"requested event : {event_info}")
+        event_info = extract_process_command(prompt_req)  
+        logging.info(f"requested event : {event_info}")
 
         if event_info.get('operation') == "invalid_commnad":
             return jsonify({
@@ -284,6 +285,61 @@ def get_session_events(user_id, session_id):
             'error_code': 500,
             'description': "Internal server error",
         }), 500  
+
+
+
+####### ASK ME CHAT API #############
+expense_chat = ExpenseChat()
+@app.route('/start_chat/<user_id>', methods=['POST'])
+@token_required
+def start_ask_chat(user_id):
+    try:
+        user_servce = UserService(g.db)
+        user = user_servce.get_user(user_id)
+
+        if user is None:
+            raise Exception(f'User {user_id} does not exists')
+
+        is_started = expense_chat.init_ask_me_on_expense_chat(user_id)
+        if is_started:
+            return jsonify({'message': f'Chat session started successfully for {user_id}'}), 200
+        else:
+            return jsonify({'error': 'Failed to start chat session'}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/follow_up_qs/<user_id>', methods=['POST'])
+@token_required
+def follow_up_qs(user_id):
+    try:
+        user_servce = UserService(g.db)
+        user = user_servce.get_user(user_id)
+
+        if user is None:
+            raise Exception(f'User {user_id} does not exists')
+
+        follow_question = request.json.get('follow_question')
+        if not follow_question:
+            return jsonify({'error': 'Follow-up question is required'}), 400
+
+        response = expense_chat.ask_follow_up_qs(user_id, follow_question)
+        return jsonify({'response': response}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/end_chat/<user_id>', methods=['POST'])
+@token_required
+def end_chat(user_id):
+    try:
+        user_servce = UserService(g.db)
+        user = user_servce.get_user(user_id)
+        if user is None:
+            raise Exception(f'User {user_id} does not exists')
+
+        expense_chat.close_chat(user_id)
+        return jsonify({'message': 'Chat session ended successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 def sendTransactionReportToUser(user_id: str, report_text: str):
     user_service = UserService(g.db)
